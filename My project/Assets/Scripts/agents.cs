@@ -15,7 +15,8 @@ public class agents : Agent
     
     public override void OnEpisodeBegin()   //start position 
     {
-        transform.localPosition = new Vector3(1f, 2f, 4f);      
+        transform.localPosition = new Vector3(Random.Range(-8.4f, -1.4f), 0.35f, Random.Range(-1.6f, 11.9f));
+        goalPosition.localPosition = new Vector3(Random.Range(-8.4f, -1.4f), 0.35f, Random.Range(-1.6f, 11.9f));
     }
 
     public override void CollectObservations(VectorSensor sensor)    //AI's vision
