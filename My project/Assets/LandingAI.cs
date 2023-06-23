@@ -13,10 +13,12 @@ public class LandingAI : Agent
     public float fuelEfficiencyCoefficient = 1.0f;
     Rigidbody rocket;
     Unity.MLAgents.Policies.BehaviorType behaviorType;
+    public Transform goalPosition;
 
     void Start()  //get behavior type
     {
         this.behaviorType = GetComponent<Unity.MLAgents.Policies.BehaviorParameters>().BehaviorType;
+        rocket = GetComponent<Rigidbody>();
     }
 
     void Update()   
@@ -27,27 +29,63 @@ public class LandingAI : Agent
             // Debug.Log("some button is pressed");
             RequestDecision();
         }
+
+        if (fuel <= 0)
+        {
+            SetReward(-1f);
+            EndEpisode();
+        }
     }
 
     public override void OnEpisodeBegin()      
     {
-
+        transform.localPosition = new Vector3(-2f, -4f, -2f);
     }
 
     public override void CollectObservations(VectorSensor sensor)    
     {
-
+        sensor.AddObservation(rocket.velocity);
+        sensor.AddObservation(goalPosition.localPosition);
+        sensor.AddObservation(transform.localPosition);
+        sensor.AddObservation(fuel);
     }
 
     public override void OnActionReceived(ActionBuffers actions)     //depends on state
     {
         int mainThrusterOn = actions.DiscreteActions[0];
+        int verticalSteer = actions.DiscreteActions[1];
+        int horizontalSteer = actions.DiscreteActions[2];
 
-        if (mainThrusterOn == 1) {
+        Debug.Log(mainThrusterOn);
+
+        if (mainThrusterOn == 1 && fuel > 0) {
             rocket.AddRelativeForce(Vector3.up * force);
             fuel -= 1 * Time.deltaTime;
             Debug.Log(fuel);
         }
+
+        float rotateX = 0f;
+        float rotateY = 0f;
+
+        if (verticalSteer == 1)
+        {
+            rotateX += 1;
+        }
+        else if (verticalSteer == 2)
+        {
+            rotateX -= 1;
+        }
+
+        if (horizontalSteer == 1)
+        {
+            rotateY += 1;
+        }
+        else if (horizontalSteer == 2)
+        {
+            rotateY -= 1;
+        }
+
+        transform.Rotate(rotateX * rotationSpeed * Time.deltaTime, rotateY * rotationSpeed * Time.deltaTime, 0);
     }
 
     public override void Heuristic(in ActionBuffers action)    
@@ -89,5 +127,29 @@ public class LandingAI : Agent
         }
 
 
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<checkpoint>(out checkpoint goal))
+        {
+            if (other.GetComponent<checkpoint>().isLast && rocket.velocity.y >= -4 && rocket.velocity.y < 0)
+            {
+                SetReward(1f);
+                Debug.Log("Success");
+                EndEpisode();
+            }
+            else if (rocket.velocity.y < 4 && rocket.velocity.y >= 0)
+            {
+                SetReward(1f);
+                Debug.Log("Success");
+            }
+            else
+            {
+                SetReward(-1f);
+                Debug.Log("Failure");
+                EndEpisode();
+            }
+        }
     }
 }
