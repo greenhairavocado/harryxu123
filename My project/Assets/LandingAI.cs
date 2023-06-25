@@ -13,7 +13,11 @@ public class LandingAI : Agent
     public float fuelEfficiencyCoefficient = 1.0f;
     Rigidbody rocket;
     Unity.MLAgents.Policies.BehaviorType behaviorType;
+    public Transform initialGoal;
     public Transform goalPosition;
+    public Transform lowestValidLocation;
+    int mainThrusterOn;
+    bool isControlledByPlayer;
 
     void Start()  //get behavior type
     {
@@ -27,6 +31,7 @@ public class LandingAI : Agent
         {
             // if heuristic react to key presses
             // Debug.Log("some button is pressed");
+            isControlledByPlayer = true;
             RequestDecision();
         }
 
@@ -35,11 +40,34 @@ public class LandingAI : Agent
             SetReward(-1f);
             EndEpisode();
         }
+
+        if (transform.localPosition.y < lowestValidLocation.localPosition.y)
+        {
+            SetReward(-1);
+            EndEpisode();
+        }
+
+        if (!isControlledByPlayer && goalPosition.localPosition.y > transform.localPosition.y && rocket.velocity.y < -0.5f)
+        {
+            SetReward(-1);
+            EndEpisode();
+        }
+        else if (goalPosition.localPosition.y < transform.localPosition.y && rocket.velocity.y > 0.5f && mainThrusterOn == 1)
+        {
+            SetReward(-1);
+            EndEpisode();
+        }
     }
 
     public override void OnEpisodeBegin()      
     {
-        transform.localPosition = new Vector3(-2f, -4f, -2f);
+        // Debug.Log($"New Episode Started {rocket.velocity}");
+        transform.localPosition = new Vector3(-2f, -4.15f, -2f);
+        transform.rotation = Quaternion.identity;
+        rocket.velocity = Vector3.zero;
+        rocket.angularVelocity = Vector3.zero;
+        goalPosition = initialGoal;
+        fuel = 100f;
     }
 
     public override void CollectObservations(VectorSensor sensor)    
@@ -52,16 +80,16 @@ public class LandingAI : Agent
 
     public override void OnActionReceived(ActionBuffers actions)     //depends on state
     {
-        int mainThrusterOn = actions.DiscreteActions[0];
+        mainThrusterOn = actions.DiscreteActions[0];
         int verticalSteer = actions.DiscreteActions[1];
         int horizontalSteer = actions.DiscreteActions[2];
 
-        Debug.Log(mainThrusterOn);
+        // Debug.Log(mainThrusterOn);
 
         if (mainThrusterOn == 1 && fuel > 0) {
             rocket.AddRelativeForce(Vector3.up * force);
             fuel -= 1 * Time.deltaTime;
-            Debug.Log(fuel);
+            // Debug.Log(fuel);
         }
 
         float rotateX = 0f;
@@ -85,7 +113,7 @@ public class LandingAI : Agent
             rotateY -= 1;
         }
 
-        transform.Rotate(rotateX * rotationSpeed * Time.deltaTime, rotateY * rotationSpeed * Time.deltaTime, 0);
+        // transform.Rotate(rotateX * rotationSpeed * Time.deltaTime, rotateY * rotationSpeed * Time.deltaTime, 0);
     }
 
     public override void Heuristic(in ActionBuffers action)    
@@ -131,7 +159,8 @@ public class LandingAI : Agent
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<checkpoint>(out checkpoint goal))
+        Debug.Log($"{other.transform} {goalPosition}");
+        if (other.TryGetComponent<checkpoint>(out checkpoint goal) && other.transform == goalPosition)
         {
             if (other.GetComponent<checkpoint>().isLast && rocket.velocity.y >= -4 && rocket.velocity.y < 0)
             {
@@ -142,7 +171,9 @@ public class LandingAI : Agent
             else if (rocket.velocity.y < 4 && rocket.velocity.y >= 0)
             {
                 SetReward(1f);
-                Debug.Log("Success");
+                Transform newGoal = other.GetComponent<checkpoint>().next;
+                goalPosition = newGoal;
+                Debug.Log("Initial Success");
             }
             else
             {
@@ -152,4 +183,24 @@ public class LandingAI : Agent
             }
         }
     }
+
+    // void OnColliderEnter(Collider other)
+    // {
+    //     Debug.Log("physical collision");
+    //     if (other.TryGetComponent<checkpoint>(out checkpoint goal))
+    //     {
+    //         if (other.GetComponent<checkpoint>().isLast && rocket.velocity.y >= -4 && rocket.velocity.y < 0)
+    //         {
+    //             SetReward(1f);
+    //             Debug.Log("Success");
+    //             EndEpisode();
+    //         }
+    //         else
+    //         {
+    //             SetReward(-1f);
+    //             Debug.Log("Failure");
+    //             EndEpisode();
+    //         }
+    //     }
+    // }
 }

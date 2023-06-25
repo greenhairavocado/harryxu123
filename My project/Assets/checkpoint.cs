@@ -20,7 +20,7 @@ public class checkpoint : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (isLast)
+        if (isLast || next == null)
         {
 
         }
