@@ -7,10 +7,15 @@ using Unity.MLAgents.Sensors;
 
 public class LandingAI : Agent
 {
+    public Material success;
+    public Material progress;
+    public Material failure;
+    public MeshRenderer floor;
     public float force = 1.0f;
     public float fuel = 100f;
     public float rotationSpeed = 5f;
     public float fuelEfficiencyCoefficient = 1.0f;
+    float lastY;
     Rigidbody rocket;
     Unity.MLAgents.Policies.BehaviorType behaviorType;
     public Transform initialGoal;
@@ -37,26 +42,48 @@ public class LandingAI : Agent
 
         if (fuel <= 0)
         {
+            floor.material = failure;
             SetReward(-1f);
+            Debug.Log("A Failure");
             EndEpisode();
         }
 
         if (transform.localPosition.y < lowestValidLocation.localPosition.y)
         {
+            floor.material = failure;
+            Debug.Log("B Failure");
             SetReward(-1);
             EndEpisode();
         }
 
-        if (!isControlledByPlayer && goalPosition.localPosition.y > transform.localPosition.y && rocket.velocity.y < -0.5f)
+        if (!isControlledByPlayer && goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY)
         {
+            // floor.material = failure;
+            Debug.Log("C Failure");
             SetReward(-1);
-            EndEpisode();
+            // EndEpisode();
         }
-        else if (goalPosition.localPosition.y < transform.localPosition.y && rocket.velocity.y > 0.5f && mainThrusterOn == 1)
+        else if (!isControlledByPlayer && goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY)
         {
+            // floor.material = failure;
             SetReward(-1);
-            EndEpisode();
+            // EndEpisode();
         }
+
+        
+
+        // if (!isControlledByPlayer && goalPosition.localPosition.y > transform.localPosition.y && rocket.velocity.y < -0.5f)
+        // {
+        //     SetReward(-1);
+        //     EndEpisode();
+        // }
+        // else if (goalPosition.localPosition.y < transform.localPosition.y && rocket.velocity.y > 0.5f && mainThrusterOn == 1)
+        // {
+        //     SetReward(-1);
+        //     EndEpisode();
+        // }
+
+        lastY = transform.localPosition.y;
     }
 
     public override void OnEpisodeBegin()      
@@ -159,26 +186,30 @@ public class LandingAI : Agent
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"{other.transform} {goalPosition}");
-        if (other.TryGetComponent<checkpoint>(out checkpoint goal) && other.transform == goalPosition)
+        
+        if (other.TryGetComponent<checkpoint>(out checkpoint goal))
         {
+            Debug.Log($"MY INFO: {rocket.velocity.y}");
             if (other.GetComponent<checkpoint>().isLast && rocket.velocity.y >= -4 && rocket.velocity.y < 0)
             {
                 SetReward(1f);
+                floor.material = success;
                 Debug.Log("Success");
                 EndEpisode();
             }
-            else if (rocket.velocity.y < 4 && rocket.velocity.y >= 0)
+            else if (!other.GetComponent<checkpoint>().isLast && rocket.velocity.y < 4 && rocket.velocity.y >= 0)
             {
                 SetReward(1f);
+                floor.material = progress;
                 Transform newGoal = other.GetComponent<checkpoint>().next;
                 goalPosition = newGoal;
                 Debug.Log("Initial Success");
             }
             else
             {
+                floor.material = failure;
                 SetReward(-1f);
-                Debug.Log("Failure");
+                Debug.Log("D Failure");
                 EndEpisode();
             }
         }

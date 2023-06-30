@@ -379,9 +379,25 @@ PrefabInstance:
     m_TransformParent: {fileID: 8910199353426620690}
     m_Modifications:
     - target: {fileID: 5391634912533980016, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
+      propertyPath: floor
+      value: 
+      objectReference: {fileID: 8910199354431651236}
+    - target: {fileID: 5391634912533980016, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
       propertyPath: MaxStep
       value: 5000
       objectReference: {fileID: 0}
+    - target: {fileID: 5391634912533980016, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
+      propertyPath: failure
+      value: 
+      objectReference: {fileID: 2100000, guid: 3cbb5ed46bfad45e486c325634d168f3, type: 2}
+    - target: {fileID: 5391634912533980016, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
+      propertyPath: success
+      value: 
+      objectReference: {fileID: 2100000, guid: cf9e72b2e4fef4023b878b450e2dd564, type: 2}
+    - target: {fileID: 5391634912533980016, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
+      propertyPath: progress
+      value: 
+      objectReference: {fileID: 2100000, guid: 123be7455111a45b3ae362cd9c3a7c81, type: 2}
     - target: {fileID: 5391634912533980016, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
       propertyPath: initialGoal
       value: 
