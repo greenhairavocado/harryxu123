@@ -410,6 +410,10 @@ PrefabInstance:
       propertyPath: lowestValidLocation
       value: 
       objectReference: {fileID: 390303649979771944}
+    - target: {fileID: 5391634912533980019, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8983810418125371925, guid: b67a13c0fb2d346a2a011b7b4e8cc7ae, type: 3}
       propertyPath: m_Mass
       value: 0.5

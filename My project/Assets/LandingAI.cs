@@ -23,6 +23,9 @@ public class LandingAI : Agent
     public Transform lowestValidLocation;
     int mainThrusterOn;
     bool isControlledByPlayer;
+    bool isOnLastGoal;
+
+    public float inertiaTimer;
 
     void Start()  //get behavior type
     {
@@ -56,18 +59,23 @@ public class LandingAI : Agent
             EndEpisode();
         }
 
-        if (!isControlledByPlayer && goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY)
+        if (goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY && inertiaTimer <= 0f)
         {
-            // floor.material = failure;
+            floor.material = failure;
             Debug.Log("C Failure");
             SetReward(-1);
-            // EndEpisode();
+            EndEpisode();
         }
-        else if (!isControlledByPlayer && goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY)
+        else if (goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY && inertiaTimer <= 0f)
         {
-            // floor.material = failure;
+            floor.material = failure;
             SetReward(-1);
-            // EndEpisode();
+            EndEpisode();
+        }
+
+        if (inertiaTimer > 0)
+        {
+            inertiaTimer -= Time.deltaTime;
         }
 
         
@@ -95,6 +103,8 @@ public class LandingAI : Agent
         rocket.angularVelocity = Vector3.zero;
         goalPosition = initialGoal;
         fuel = 100f;
+        inertiaTimer = 0.5f;
+        isOnLastGoal = false;
     }
 
     public override void CollectObservations(VectorSensor sensor)    
@@ -186,11 +196,10 @@ public class LandingAI : Agent
 
     void OnTriggerEnter(Collider other)
     {
-        
         if (other.TryGetComponent<checkpoint>(out checkpoint goal))
         {
             Debug.Log($"MY INFO: {rocket.velocity.y}");
-            if (other.GetComponent<checkpoint>().isLast && rocket.velocity.y >= -4 && rocket.velocity.y < 0)
+            if (isOnLastGoal && rocket.velocity.y >= -4 && rocket.velocity.y <= 0)
             {
                 SetReward(1f);
                 floor.material = success;
@@ -200,16 +209,18 @@ public class LandingAI : Agent
             else if (!other.GetComponent<checkpoint>().isLast && rocket.velocity.y < 4 && rocket.velocity.y >= 0)
             {
                 SetReward(1f);
+                isOnLastGoal = true;
                 floor.material = progress;
                 Transform newGoal = other.GetComponent<checkpoint>().next;
                 goalPosition = newGoal;
                 Debug.Log("Initial Success");
+                inertiaTimer = 2f;
             }
-            else
+            else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 0))
             {
                 floor.material = failure;
                 SetReward(-1f);
-                Debug.Log("D Failure");
+                Debug.Log($"Crash Failure {rocket.velocity.y}");
                 EndEpisode();
             }
         }

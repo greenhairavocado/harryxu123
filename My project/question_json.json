@@ -1,0 +1,352 @@
+[
+  {
+    "question_type": "Galaxy",
+    "questions": [
+      {
+        "question_level": "easy",
+        "value": [
+          {
+            "question": "What is the process by which a star exhausts its nuclear fuel and collapses under gravity?",
+            "options": [
+              "Supernova",
+              "Black hole",
+              "Red giant",
+              "White dwarf"
+            ],
+            "answer": "Black hole"
+          },
+          {
+            "question": "Which of the following is not a type of galaxy?",
+            "options": [
+              "Spiral",
+              "Elliptical",
+              "Irregular",
+              "Nebula"
+            ],
+            "answer": "Nebula"
+          },
+          {
+            "question": "What is the name of the phenomenon where light is bent as it passes through a gravitational field?",
+            "options": [
+              "Stellar parallax",
+              "Redshift",
+              "Gravitational lensing",
+              "Cosmic microwave background"
+            ],
+            "answer": "Gravitational lensing"
+          },
+          {
+            "question": "What causes the seasons on Earth?",
+            "options": [
+              "Earth's rotation",
+              "Earth's elliptical orbit",
+              "Earth's axial tilt",
+              "Earth's magnetic field"
+            ],
+            "answer": "Gravitational lensing"
+          },
+          {
+            "question": "What causes the seasons on Earth?",
+            "options": [
+              "Earth's rotation",
+              "Earth's elliptical orbit",
+              "Earth's axial tilt",
+              "Earth's magnetic field"
+            ],
+            "answer": "Gravitational lensing"
+          },
+          {
+            "question": "Which planet has the most extensive system of rings?",
+            "options": [
+              "Jupiter",
+              "Uranus",
+              "Neptune",
+              "Saturn"
+            ],
+            "answer": "Gravitational lensing"
+          },
+          {
+            "question": "What is the name of the galaxy that contains our solar system?",
+            "options": [
+              "Andromeda",
+              "Milky Way",
+              "Sombrero",
+              "Pinwheel"
+            ],
+            "answer": "Gravitational lensing"
+          }
+        ]
+      },
+      {
+        "question_level": "medium",
+        "value": [
+          {
+            "question": "What is the term for a large cloud of gas and dust in space where stars are born?",
+            "options": [
+              "Supernova",
+              "Nebula",
+              "Quasar",
+              "Pulsar"
+            ],
+            "answer": "Nebula"
+          },
+          {
+            "question": "What is the name of the galaxy that contains our solar system?",
+            "options": [
+              "Andromeda",
+              "Milky Way",
+              "Orion",
+              "Triangulum"
+            ],
+            "answer": "Milky Way"
+          },
+          {
+            "question": "What is the term for the sudden burst of energy from a star's surface?",
+            "options": [
+              "Solar flare",
+              "Stellar eruption",
+              "Lunar eclipse",
+              "Planetary transit"
+            ],
+            "answer": "Milky Way"
+          },
+          {
+            "question": " Which planet has the highest average surface temperature?",
+            "options": [
+              "Venus",
+              "Mercury",
+              "Mars",
+              "Jupiter"
+            ],
+            "answer": "Milky Way"
+          }
+        ]
+      },
+      {
+        "question_level": "hard",
+        "value": [
+          {
+            "question": "What is the unit of measurement used to describe the distance between stars and galaxies?",
+            "options": [
+              "Light-year",
+              "Parsec",
+              "Astronomical unit",
+              "Megaparsec"
+            ],
+            "answer": "Parsec"
+          },
+          {
+            "question": "What is the term for the explosive death of a massive star, resulting in a burst of energy and the formation of heavy elements?",
+            "options": [
+              "White dwarf",
+              "Supernova",
+              "Neutron star",
+              "Red giant"
+            ],
+            "answer": "Supernova"
+          },
+          {
+            "question": "What is the largest moon in our solar system?",
+            "options": [
+              "Titan",
+              "Ganymede",
+              "Europa",
+              "Enceladus"
+            ],
+            "answer": "Ganymede"
+          },
+          {
+            "question": "Which of the following is not a type of telescope?",
+            "options": [
+              "Refractor",
+              "Reflector",
+              "Spectrometer",
+              "Catadioptric"
+            ],
+            "answer": "Spectrometer"
+          },
+          {
+            "question": "What is the name of the force that holds galaxies together?",
+            "options": [
+              "Gravity",
+              "Magnetism",
+              "Electromagnetism",
+              "Strong nuclear force"
+            ],
+            "answer": "Gravity"
+          },
+          {
+            "question": "What is the name of the process by which stars produce heavier elements through nuclear reactions?",
+            "options": [
+              "Stellar nucleosynthesis",
+              "Planetary accretion",
+              "Supernova explosion",
+              "Stellar formation"
+            ],
+            "answer": "Gravity"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "question_type": "Solar System",
+    "questions": [
+      {
+        "question_level": "easy",
+        "value": [
+          {
+            "question": "What is the process by which a star exhausts its nuclear fuel and collapses under gravity?",
+            "options": [
+              "Supernova",
+              "Black hole",
+              "Red giant",
+              "White dwarf"
+            ],
+            "answer": "Black hole"
+          },
+          {
+            "question": "Which of the following is not a type of galaxy?",
+            "options": [
+              "Spiral",
+              "Elliptical",
+              "Irregular",
+              "Nebula"
+            ],
+            "answer": "Nebula"
+          },
+          {
+            "question": "What is the name of the phenomenon where light is bent as it passes through a gravitational field?",
+            "options": [
+              "Stellar parallax",
+              "Redshift",
+              "Gravitational lensing",
+              "Cosmic microwave background"
+            ],
+            "answer": "Gravitational lensing"
+          },
+          {
+            "question": "Which planet in our solar system has the most prominent ring system?",
+            "options": [
+              "Saturn",
+              "Jupiter",
+              "Uranus",
+              "Neptune"
+            ],
+            "answer": "Saturn"
+          }
+        ]
+      },
+      {
+        "question_level": "medium",
+        "value": [
+          {
+            "question": "What is the term for a large cloud of gas and dust in space where stars are born?",
+            "options": [
+              "Supernova",
+              "Nebula",
+              "Quasar",
+              "Pulsar"
+            ],
+            "answer": "Nebula"
+          },
+          {
+            "question": "Which planet in our solar system has the most prominent ring system?",
+            "options": [
+              "Saturn",
+              "Jupiter",
+              "Uranus",
+              "Neptune"
+            ],
+            "answer": "Saturn"
+          },
+          {
+            "question": "What is the name of the galaxy that contains our solar system?",
+            "options": [
+              "Andromeda",
+              "Milky Way",
+              "Orion",
+              "Triangulum"
+            ],
+            "answer": "Milky Way"
+          },
+          {
+            "question": "Which planet is known for its prominent system of polar ice caps?",
+            "options": [
+              "Mars",
+              "Venus",
+              "Saturn",
+              "Uranus"
+            ],
+            "answer": "Uranus"
+          }
+        ]
+      },
+      {
+        "question_level": "hard",
+        "value": [
+          {
+            "question": "What is the unit of measurement used to describe the distance between stars and galaxies?",
+            "options": [
+              "Light-year",
+              "Parsec",
+              "Astronomical unit",
+              "Megaparsec"
+            ],
+            "answer": "Parsec"
+          },
+          {
+            "question": "What is the term for the explosive death of a massive star, resulting in a burst of energy and the formation of heavy elements?",
+            "options": [
+              "White dwarf",
+              "Supernova",
+              "Neutron star",
+              "Red giant"
+            ],
+            "answer": "Supernova"
+          },
+          {
+            "question": "Which of the following is not a moon of Saturn?",
+            "options": [
+              "Titan",
+              "Io",
+              "Enceladus",
+              "Dione"
+            ],
+            "answer": "Io"
+          },
+          {
+            "question": "What is the name of the first manned mission to land on the Moon?",
+            "options": [
+              "Apollo 11",
+              "Voyager 1",
+              "Gemini 7",
+              "Soyuz 1"
+            ],
+            "answer": "Apollo 11"
+          },
+          {
+            "question": "Which planet is often referred to as the \"Morning Star\" or the \"Evening Star\"?",
+            "options": [
+              "Venus",
+              "Mars",
+              "Mercury",
+              "Saturn"
+            ],
+            "answer": "Venus"
+          },
+          {
+            "question": "What is the name of the largest moon of Neptune?",
+            "options": [
+              "Triton",
+              "Callisto",
+              "Charon",
+              "Phobos"
+            ],
+            "answer": "Triton"
+          }
+        ]
+      }
+    ]
+  }
+]
