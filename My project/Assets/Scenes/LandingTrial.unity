@@ -1745,7 +1745,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8910199353954178628, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
@@ -2026,6 +2026,17 @@ MonoBehaviour:
   rocketTransform: {fileID: 1092876830}
   offset: {x: 0, y: 0, z: 2}
   rotateSpeed: 5
+--- !u!114 &1417387062 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8910199353773748385, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
+  m_PrefabInstance: {fileID: 1092876829}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e816f855ea123488891afd2b384266c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1433199816
 GameObject:
   m_ObjectHideFlags: 0
@@ -2102,6 +2113,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1433199816}
   m_CullTransparentMesh: 1
+--- !u!4 &1550070781 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 390303649979771944, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
+  m_PrefabInstance: {fileID: 1092876829}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1588002888
 GameObject:
   m_ObjectHideFlags: 0
@@ -2352,6 +2368,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &1692119990 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8910199353954178651, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
+  m_PrefabInstance: {fileID: 1092876829}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1695211699
 GameObject:
   m_ObjectHideFlags: 0
@@ -3190,6 +3211,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 767736374}
+  fuelSlider: {fileID: 1657735079}
+  progressSlider: {fileID: 1695211701}
+  rocket: {fileID: 1417387062}
+  progress: 0
+  direction: 0
+  initialGoal: {fileID: 1692119990}
+  platform: {fileID: 1550070781}
 --- !u!4 &1966776730
 Transform:
   m_ObjectHideFlags: 0
