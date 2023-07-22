@@ -25,6 +25,11 @@ public class LandingAI : Agent
     bool isControlledByPlayer;
     bool isOnLastGoal;
 
+    [Header("New Control Scheme")]
+    public bool thrusting;
+    public bool playerPrivileges;
+
+
     public float inertiaTimer;
 
     void Start()  //get behavior type
@@ -43,12 +48,29 @@ public class LandingAI : Agent
             RequestDecision();
         }
 
-        if (fuel <= 0)
+        if (!playerPrivileges)
         {
-            floor.material = failure;
-            SetReward(-1f);
-            Debug.Log("A Failure");
-            EndEpisode();
+            if (fuel <= 0)
+            {
+                floor.material = failure;
+                SetReward(-1f);
+                Debug.Log("A Failure");
+                EndEpisode();
+            }
+
+            if (goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY && inertiaTimer <= 0f)
+            {
+                floor.material = failure;
+                Debug.Log("C Failure");
+                SetReward(-1);
+                EndEpisode();
+            }
+            else if (goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY && inertiaTimer <= 0f)
+            {
+                floor.material = failure;
+                SetReward(-1);
+                EndEpisode();
+            }
         }
 
         if (transform.localPosition.y < lowestValidLocation.localPosition.y)
@@ -58,21 +80,7 @@ public class LandingAI : Agent
             SetReward(-1);
             EndEpisode();
         }
-
-        if (goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY && inertiaTimer <= 0f)
-        {
-            floor.material = failure;
-            Debug.Log("C Failure");
-            SetReward(-1);
-            EndEpisode();
-        }
-        else if (goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY && inertiaTimer <= 0f)
-        {
-            floor.material = failure;
-            SetReward(-1);
-            EndEpisode();
-        }
-
+        
         if (inertiaTimer > 0)
         {
             inertiaTimer -= Time.deltaTime;
@@ -92,6 +100,11 @@ public class LandingAI : Agent
         // }
 
         lastY = transform.localPosition.y;
+    }
+
+    public void ToggleThrust()
+    {
+        thrusting = !thrusting;
     }
 
     public override void OnEpisodeBegin()      
@@ -166,7 +179,7 @@ public class LandingAI : Agent
         }
         */
 
-        if (Input.GetKey(KeyCode.UpArrow))     
+        if (Input.GetKey(KeyCode.UpArrow) || thrusting)     
         {
             discreteActions[0] = 1;
         }
