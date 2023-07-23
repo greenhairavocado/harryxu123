@@ -26,7 +26,7 @@ namespace Managers
 
         void InitializeFirebase()
         {
-            auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+            auth = FirebaseAuth.DefaultInstance;
             auth.StateChanged += AuthStateChanged;
             AuthStateChanged(this, null);
             Debug.Log("Firebase Initialized");
@@ -34,55 +34,58 @@ namespace Managers
 
         void AuthStateChanged(object sender, System.EventArgs eventArgs)
         {
-            // if (auth.currentUser != user)
-            // {
-            //     bool loggedIn = (user != auth.CurrentUser && auth.CurrentUser != null);
+            if (auth.CurrentUser != user)
+            {
+                bool loggedIn = (user != auth.CurrentUser && auth.CurrentUser != null);
 
-            //     if (!loggedIn && user != null)
-            //     {
-            //         Debug.Log("user logged out");
+                if (!loggedIn && user != null)
+                {
+                    Debug.Log("user logged out");
 
-            //         // TODO more logout stuff
-            //     }
+                    // TODO more logout stuff
+                }
 
-            //     user = auth.currentUser;
+                user = auth.CurrentUser;
 
-            //     if (loggedIn)
-            //     {
-            //         Debug.Log("user logged in");
-            //     }
-            // }
+                if (loggedIn)
+                {
+                    Debug.Log("user logged in");
+                }
+            }
         }
 
-        // public IEnumerator SignUp(string email, string password)
-        // {
-        //     // var signupTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
-        //     // yield return new WaitUntil(predicate: () => signupTask.IsCompleted);
+        public IEnumerator SignUp(string email, string password)
+        {
+            var signupTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            yield return new WaitUntil(predicate: () => signupTask.IsCompleted);
 
-        //     // if (signupTask.Exception == null)
-        //     // {
-        //     //     user = signupTask.Result;
-        //     //     if (user != null)
-        //     //     {
-        //     //         // do post-signup stuff here
-        //     //     }
-        //     // }
-        // }
+            if (signupTask.Exception == null)
+            {
+                Debug.Log(signupTask.Result);
+                // user = signupTask.user;
+                // if (user != null)
+                // {
+                //     // do post-signup stuff here
+                // }
+            }
+        }
 
-        // public IEnumerator Login(string email, string password)
-        // {
-        //     // var loginTask = auth.SignInWithEmailAndPasswordAsync(email, password);
+        public IEnumerator Login(string email, string password)
+        {
+            Debug.Log("Attempting to login");
+            var loginTask = auth.SignInWithEmailAndPasswordAsync(email, password);
 
-        //     // yield return new WaitUntil(predicate: () => loginTask.IsCompleted);
+            yield return new WaitUntil(predicate: () => loginTask.IsCompleted);
 
-        //     // if (loginTask.Exception == null)
-        //     // {
-        //     //     Debug.Log("User logged in successfully");
-        //     //     user = loginTask.Result;
+            if (loginTask.Exception == null)
+            {
+                Debug.Log("User logged in successfully");
+                // user = loginTask.user;
+                Debug.Log(loginTask.Result);
 
-        //     //     // do other stuff here
-        //     // }
-        // }
+                // do other stuff here
+            }
+        }
 
         public void SignOut()
         {
