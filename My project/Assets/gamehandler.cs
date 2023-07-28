@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -10,6 +12,10 @@ public class gamehandler : MonoBehaviour
     public TextMeshProUGUI progressText;
     public Slider fuelSlider;
     public Slider progressSlider;
+    public GameObject enemySlider;
+    public GameObject rocketToggle;
+    public GameObject joystick;
+    public GameObject quizPanel;
     public LandingAI rocket;
     float startTime;
     float currentFuel;
@@ -67,5 +73,56 @@ public class gamehandler : MonoBehaviour
 
 
         progressSlider.value = progress;
+    }
+
+    public void CreateQuizQuestion()
+    {
+        enemySlider.SetActive(false);
+        joystick.SetActive(false);
+        rocketToggle.SetActive(false);
+
+        quizPanel.SetActive(true);
+
+        /*
+        q1). What is the process by which a star exhausts its nuclear fuel and collapses under gravity?
+        a) Supernova
+        b) Black hole
+        c) Red giant
+        d) White dwarf
+
+        q2). Which of the following is not a type of galaxy?
+        a) Spiral
+        b) Elliptical
+        c) Irregular
+        d) Nebula
+
+        q3). What is the name of the phenomenon where light is bent as it passes through a gravitational field?
+        a) Stellar parallax
+        b) Redshift
+        c) Gravitational lensing
+        d) Cosmic microwave background
+        */
+
+        // pick a random question
+        var questions = new List<Tuple<string, string, string, string, string>>
+        {
+            Tuple.Create("What is the process by which a star exhausts its nuclear fuel and collapses under gravity?", 
+                         "Supernova", 
+                         "Black Hole", 
+                         "Red Giant", 
+                         "White Dwarf"),
+        };
+
+        var random = Random();
+        var randomIndex = UnityEngine.Random.Range(0, questions.Count);
+
+        var selectedQuestion = questions[randomIndex];
+        questions.RemoveAt(randomIndex);
+
+        quizPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = selectedQuestion.Item1;
+
+        quizPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = selectedQuestion.Item2;
+
+
     }
 }
