@@ -113,7 +113,6 @@ public class gamehandler : MonoBehaviour
                          "White Dwarf"),
         };
 
-        var random = Random();
         var randomIndex = UnityEngine.Random.Range(0, questions.Count);
 
         var selectedQuestion = questions[randomIndex];
