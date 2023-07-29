@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.003060742, g: 0.0027653452, b: 0.003253492, a: 1}
+  m_IndirectSpecularColor: {r: 0.003080015, g: 0.00278574, b: 0.0032704263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1499,6 +1499,7 @@ MonoBehaviour:
   target: {fileID: 1692119990}
   pointer: {fileID: 718224799}
   mainCamera: {fileID: 1304130187}
+  rocket: {fileID: 1454984433}
 --- !u!1 &726201563
 GameObject:
   m_ObjectHideFlags: 0
@@ -2351,6 +2352,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1428046836, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5609633023573567940, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
       propertyPath: m_Mass
       value: 1
@@ -2411,6 +2416,10 @@ PrefabInstance:
       propertyPath: game
       value: 
       objectReference: {fileID: 1966776729}
+    - target: {fileID: 8910199353773748385, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
+      propertyPath: fuelEfficiencyCoefficient
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8910199353954178651, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2419,6 +2428,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8910199353954178655, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 731e2cbd74ac444fcb36e41d6ea87b77, type: 3}
 --- !u!4 &1092876830 stripped
@@ -2793,7 +2806,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1304130185}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: -2, y: -4, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3446,6 +3459,7 @@ MonoBehaviour:
   target: {fileID: 547116436}
   pointer: {fileID: 726201567}
   mainCamera: {fileID: 1304130187}
+  rocket: {fileID: 0}
 --- !u!114 &1534355849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4552,6 +4566,7 @@ MonoBehaviour:
   target: {fileID: 1692119990}
   pointer: {fileID: 718224799}
   mainCamera: {fileID: 1304130187}
+  rocket: {fileID: 0}
 --- !u!65 &1843252988
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4811,6 +4826,7 @@ MonoBehaviour:
   initialGoal: {fileID: 1692119990}
   platform: {fileID: 1550070781}
   questionProgressRequirement: 0
+  isQuizActive: 0
 --- !u!4 &1966776730
 Transform:
   m_ObjectHideFlags: 0

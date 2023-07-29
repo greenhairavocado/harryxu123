@@ -38,6 +38,8 @@ namespace Handlers
         private Vector3 storedOpponentAngularVelocity;
 
         private string correctAnswer;
+        [HideInInspector]
+        public bool isQuizActive;
 
         List<Tuple<string, string, string, string, string, string>> questions;
 
@@ -76,6 +78,7 @@ namespace Handlers
         // Update is called once per frame
         void Update()
         {
+            // Debug.Log(direction);
             currentFuel = rocket.fuel;
             fuelSlider.value = currentFuel / 100;
 
@@ -108,13 +111,14 @@ namespace Handlers
                 progressText.text = $"{(int)(progress * 100)}%";
             }
 
-            if (progress >= questionProgressRequirement)
+            if (progress >= questionProgressRequirement && questionProgressRequirement != 0.5f)
             {
                 questionProgressRequirement = questionProgressRequirement + 0.25f;
                 // all rockets must be stopped
                 PauseMovement();
                 // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
                 // question should be asked
+                Debug.Log("monke");
                 CreateQuizQuestion();
 
                 
@@ -156,6 +160,7 @@ namespace Handlers
 
         public void CreateQuizQuestion()
         {
+            isQuizActive = true;
             enemySlider.SetActive(false);
             joystick.SetActive(false);
             rocketToggle.SetActive(false);
@@ -206,7 +211,7 @@ namespace Handlers
             // };
 
             var randomIndex = UnityEngine.Random.Range(0, questions.Count);
-            // Debug.Log($"{randomIndex} {questions.Count}");
+            Debug.Log($"{randomIndex} {questions.Count}");
             var selectedQuestion = questions[randomIndex];
             questions.RemoveAt(randomIndex);
 
@@ -225,11 +230,20 @@ namespace Handlers
             if (choice == correctAnswer)
             {
                 Debug.Log("You got the question right!");
+                rocket.fuel = 100;
             }
             else
             {
                 Debug.Log("You got the question wrong!");
+                rocket.fuel -= 10;
             }
+
+            if (questionProgressRequirement == 0.5f)
+            {
+                direction = 1;
+            }
+
+            isQuizActive = false;
 
             enemySlider.SetActive(true);
             joystick.SetActive(true);

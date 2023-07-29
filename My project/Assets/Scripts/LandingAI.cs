@@ -9,6 +9,7 @@ using Handlers;
 public class LandingAI : Agent
 {
     public gamehandler game;
+    public GameObject particles;
     public Material success;
     public Material progress;
     public Material failure;
@@ -107,6 +108,7 @@ public class LandingAI : Agent
     public void ToggleThrust()
     {
         thrusting = !thrusting;
+        particles.SetActive(thrusting);
     }
 
     public override void OnEpisodeBegin()      
@@ -140,7 +142,7 @@ public class LandingAI : Agent
 
         if (mainThrusterOn == 1 && fuel > 0) {
             rocket.AddRelativeForce(Vector3.up * force);
-            fuel -= 1 * Time.deltaTime;
+            if (!game.isQuizActive) fuel -= fuelEfficiencyCoefficient * Time.deltaTime;
             // Debug.Log(fuel);
         }
 
@@ -214,7 +216,7 @@ public class LandingAI : Agent
         if (other.TryGetComponent<checkpoint>(out checkpoint goal))
         {
             Debug.Log($"MY INFO: {rocket.velocity.y}");
-            if (isOnLastGoal && rocket.velocity.y >= -4 && rocket.velocity.y <= 0)
+            if (isOnLastGoal && rocket.velocity.y >= -4 && rocket.velocity.y <= 0 && goal.isLast)
             {
                 SetReward(1f);
                 floor.material = success;
@@ -231,12 +233,17 @@ public class LandingAI : Agent
                 Debug.Log("Initial Success");
                 inertiaTimer = 2f;
 
-                game.questionProgressRequirement = game.questionProgressRequirement + 0.25f;
-                // all rockets must be stopped
-                game.PauseMovement();
-                // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
-                // question should be asked
-                game.CreateQuizQuestion();
+                if (!game.isQuizActive && game.progress >= game.questionProgressRequirement)
+                {
+                    game.questionProgressRequirement = game.questionProgressRequirement + 0.25f;
+                    // all rockets must be stopped
+                    game.PauseMovement();
+                    // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
+                    // question should be asked
+                    Debug.Log("see");
+                    game.CreateQuizQuestion();
+                }
+                
             }
             else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 0))
             {

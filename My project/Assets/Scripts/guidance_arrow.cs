@@ -8,6 +8,7 @@ public class guidance_arrow : MonoBehaviour
     public Transform pointer;
     // RectTransform arrow;
     public Camera mainCamera;
+    public GameObject rocket;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +18,7 @@ public class guidance_arrow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pointer.LookAt(target);
+        pointer.LookAt(rocket.GetComponent<LandingAI>().goalPosition);
         // Vector3 direction = target.position - Camera.main.transform.position;
         // direction.Normalize();
 
