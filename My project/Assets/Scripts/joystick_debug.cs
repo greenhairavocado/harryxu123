@@ -22,7 +22,7 @@ public class joystick_debug : MonoBehaviour
     void Update()
     {
         Vector2 steer = playerInput.actions["Steering"].ReadValue<Vector2>();
-        Debug.Log(steer);
+        // Debug.Log(steer);
 
         float roll = steer.x;
         float pitch = steer.y;

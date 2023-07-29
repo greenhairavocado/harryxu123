@@ -4,9 +4,11 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using Handlers;
 
 public class LandingAI : Agent
 {
+    public gamehandler game;
     public Material success;
     public Material progress;
     public Material failure;
@@ -219,7 +221,7 @@ public class LandingAI : Agent
                 Debug.Log("Success");
                 EndEpisode();
             }
-            else if (!other.GetComponent<checkpoint>().isLast && rocket.velocity.y < 4 && rocket.velocity.y >= 0)
+            else if (!other.GetComponent<checkpoint>().isLast)
             {
                 SetReward(1f);
                 isOnLastGoal = true;
@@ -228,6 +230,13 @@ public class LandingAI : Agent
                 goalPosition = newGoal;
                 Debug.Log("Initial Success");
                 inertiaTimer = 2f;
+
+                game.questionProgressRequirement = game.questionProgressRequirement + 0.25f;
+                // all rockets must be stopped
+                game.PauseMovement();
+                // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
+                // question should be asked
+                game.CreateQuizQuestion();
             }
             else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 0))
             {
