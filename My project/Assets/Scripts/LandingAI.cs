@@ -58,6 +58,8 @@ public class LandingAI : Agent
                 floor.material = failure;
                 SetReward(-1f);
                 Debug.Log("A Failure");
+
+                game.RequestRestart("You ran out of fuel!");
                 EndEpisode();
             }
 
@@ -73,6 +75,17 @@ public class LandingAI : Agent
                 floor.material = failure;
                 SetReward(-1);
                 EndEpisode();
+            }
+        }
+        else
+        {
+            if (fuel <= 0)
+            {
+                // floor.material = failure;
+                SetReward(-1f);
+                Debug.Log("PLayer A Failure");
+
+                game.RequestRestart("You ran out of fuel!");
             }
         }
 
@@ -236,6 +249,7 @@ public class LandingAI : Agent
                 if (!game.isQuizActive && game.progress >= game.questionProgressRequirement)
                 {
                     game.questionProgressRequirement = game.questionProgressRequirement + 0.25f;
+                    game.lastCheckpoint += 1;
                     // all rockets must be stopped
                     game.PauseMovement();
                     // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
@@ -250,9 +264,16 @@ public class LandingAI : Agent
                 floor.material = failure;
                 SetReward(-1f);
                 Debug.Log($"Crash Failure {rocket.velocity.y}");
+
+                game.RequestRestart("You crashed!");
                 EndEpisode();
             }
         }
+    }
+
+    public void RestartAgent()
+    {
+        EndEpisode();
     }
 
     // void OnColliderEnter(Collider other)

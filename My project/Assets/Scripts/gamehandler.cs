@@ -10,6 +10,11 @@ namespace Handlers
 {
     public class gamehandler : MonoBehaviour
     {
+        [Header("Panel References")]
+        public GameObject restartPanel;
+        public GameObject quizPanel;
+
+        [Header("UI References")]
         public TextMeshProUGUI timerText;
         public TextMeshProUGUI progressText;
         public Slider fuelSlider;
@@ -17,9 +22,13 @@ namespace Handlers
         public GameObject enemySlider;
         public GameObject rocketToggle;
         public GameObject joystick;
-        public GameObject quizPanel;
+        
+        [Header("Object References")]
         public LandingAI rocket;
         public GameObject opponent;
+        public List<Vector3> checkpoints;
+        [HideInInspector]
+        public int lastCheckpoint = -1;
 
         float startTime;
         float currentFuel;
@@ -114,6 +123,7 @@ namespace Handlers
             if (progress >= questionProgressRequirement && questionProgressRequirement != 0.5f)
             {
                 questionProgressRequirement = questionProgressRequirement + 0.25f;
+                lastCheckpoint += 1;
                 // all rockets must be stopped
                 PauseMovement();
                 // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
@@ -128,34 +138,43 @@ namespace Handlers
             progressSlider.value = progress;
         }
 
-        public void PauseMovement()
+        public void PauseMovement(bool playerOnly=false)
         {
             Rigidbody playerRigidbody = rocket.GetComponent<Rigidbody>();
-            Rigidbody enemyRigidbody = opponent.GetComponent<Rigidbody>();
-
+            
             storedPlayerVelocity = playerRigidbody.velocity;
             storedPlayerAngularVelocity = playerRigidbody.angularVelocity;
-
-            storedOpponentVelocity = enemyRigidbody.velocity;
-            storedOpponentAngularVelocity = enemyRigidbody.angularVelocity;
-
             playerRigidbody.isKinematic = true;
-            enemyRigidbody.isKinematic = true;
+
+            if (!playerOnly)
+            {
+                Rigidbody enemyRigidbody = opponent.GetComponent<Rigidbody>();
+                storedOpponentVelocity = enemyRigidbody.velocity;
+                storedOpponentAngularVelocity = enemyRigidbody.angularVelocity;
+                enemyRigidbody.isKinematic = true;
+            }
         }
 
-        public void ResumeMovement()
+        public void ResumeMovement(bool playerOnly=false, bool reset=false)
         {
             Rigidbody playerRigidbody = rocket.GetComponent<Rigidbody>();
-            Rigidbody enemyRigidbody = opponent.GetComponent<Rigidbody>();
 
             playerRigidbody.isKinematic = false;
-            enemyRigidbody.isKinematic = false;
 
-            playerRigidbody.velocity = storedPlayerVelocity;
-            playerRigidbody.angularVelocity = storedPlayerAngularVelocity;
+            if (!reset)
+            {
+                playerRigidbody.velocity = storedPlayerVelocity;
+                playerRigidbody.angularVelocity = storedPlayerAngularVelocity;
+            }
 
-            enemyRigidbody.velocity = storedOpponentVelocity;
-            enemyRigidbody.angularVelocity = storedOpponentAngularVelocity;
+            if (!playerOnly)
+            {
+                Rigidbody enemyRigidbody = opponent.GetComponent<Rigidbody>();
+                enemyRigidbody.isKinematic = false;
+
+                enemyRigidbody.velocity = storedOpponentVelocity;
+                enemyRigidbody.angularVelocity = storedOpponentAngularVelocity;
+            }
         }
 
         public void CreateQuizQuestion()
@@ -251,6 +270,28 @@ namespace Handlers
 
             quizPanel.SetActive(false);
             ResumeMovement();
+        }
+
+        public void RequestRestart(string reason)
+        {
+            PauseMovement(true);
+            restartPanel.SetActive(true);
+
+            restartPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = reason;
+        }
+
+        public void Restart()
+        {
+            ResumeMovement(true, true);
+            if (lastCheckpoint == -1)
+            {
+                rocket.GetComponent<LandingAI>().RestartAgent();
+            }
+            else
+            {
+                rocket.transform.position = checkpoints[lastCheckpoint];
+            }
+
         }
     }
 
