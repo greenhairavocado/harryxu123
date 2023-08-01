@@ -43,6 +43,8 @@ public class LandingAI : Agent
 
     void Update()   
     {
+        if (game.playerIsDone) return;
+
         if (this.behaviorType == Unity.MLAgents.Policies.BehaviorType.HeuristicOnly)
         {
             // if heuristic react to key presses
@@ -91,10 +93,16 @@ public class LandingAI : Agent
 
         if (transform.localPosition.y < lowestValidLocation.localPosition.y)
         {
+            // floor.material = failure;
+            // Debug.Log("B Failure");
+            // SetReward(-1);
+            // EndEpisode();
             floor.material = failure;
-            Debug.Log("B Failure");
-            SetReward(-1);
-            EndEpisode();
+            SetReward(-1f);
+            // Debug.Log($"Crash Failure {rocket.velocity.y}");
+            game.playerIsDone = false;
+            game.RequestRestart("You crashed!");
+            // EndEpisode();
         }
         
         if (inertiaTimer > 0)
@@ -127,7 +135,7 @@ public class LandingAI : Agent
     public override void OnEpisodeBegin()      
     {
         // Debug.Log($"New Episode Started {rocket.velocity}");
-        transform.localPosition = new Vector3(-2f, -4.15f, -2f);
+        transform.localPosition = new Vector3(0f, -4.15f, 0f);
         transform.rotation = Quaternion.identity;
         rocket.velocity = Vector3.zero;
         rocket.angularVelocity = Vector3.zero;
@@ -155,7 +163,7 @@ public class LandingAI : Agent
 
         if (mainThrusterOn == 1 && fuel > 0) {
             rocket.AddRelativeForce(Vector3.up * force);
-            if (!game.isQuizActive) fuel -= fuelEfficiencyCoefficient * Time.deltaTime;
+            if (!game.isQuizActive && !game.restartPanel.activeSelf) fuel -= fuelEfficiencyCoefficient * Time.deltaTime;
             // Debug.Log(fuel);
         }
 
@@ -228,13 +236,14 @@ public class LandingAI : Agent
     {
         if (other.TryGetComponent<checkpoint>(out checkpoint goal))
         {
-            Debug.Log($"MY INFO: {rocket.velocity.y}");
+            // Debug.Log($"MY INFO: {rocket.velocity.y}");
             if (isOnLastGoal && rocket.velocity.y >= -4 && rocket.velocity.y <= 0 && goal.isLast)
             {
                 SetReward(1f);
                 floor.material = success;
                 Debug.Log("Success");
-                EndEpisode();
+                // EndEpisode();
+                game.IndicateCompletion(true);
             }
             else if (!other.GetComponent<checkpoint>().isLast)
             {
@@ -246,7 +255,10 @@ public class LandingAI : Agent
                 Debug.Log("Initial Success");
                 inertiaTimer = 2f;
 
-                if (!game.isQuizActive && game.progress >= game.questionProgressRequirement)
+                Debug.Log(game.progress + " " + game.questionProgressRequirement);
+                Debug.Log($"AAA: {other.gameObject.name}, {goalPosition.name}");
+
+                if (!game.isQuizActive && 0.5f == game.questionProgressRequirement)
                 {
                     game.questionProgressRequirement = game.questionProgressRequirement + 0.25f;
                     game.lastCheckpoint += 1;
@@ -254,19 +266,19 @@ public class LandingAI : Agent
                     game.PauseMovement();
                     // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
                     // question should be asked
-                    Debug.Log("see");
+                    // Debug.Log("see");
                     game.CreateQuizQuestion();
                 }
                 
             }
-            else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 0))
+            else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 1))
             {
                 floor.material = failure;
                 SetReward(-1f);
                 Debug.Log($"Crash Failure {rocket.velocity.y}");
 
                 game.RequestRestart("You crashed!");
-                EndEpisode();
+                // EndEpisode();
             }
         }
     }

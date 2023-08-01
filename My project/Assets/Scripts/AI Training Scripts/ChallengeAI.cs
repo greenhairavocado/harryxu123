@@ -2,9 +2,13 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-
+using Handlers;
+using Managers;
 public class ChallengeAI : Agent
 {
+    public gamehandler game;
+    public GameObject particles;
+    public float speed = 5f;
     public Material success;
     public Material progress;
     public Material failure;
@@ -13,6 +17,8 @@ public class ChallengeAI : Agent
     public float fuel = 100f;
     public float rotationSpeed = 5f;
     public float fuelEfficiencyCoefficient = 1.0f;
+    bool landing;
+    bool done;
     float lastY;
     Rigidbody rocket;
     Unity.MLAgents.Policies.BehaviorType behaviorType;
@@ -20,7 +26,7 @@ public class ChallengeAI : Agent
     public Transform goalPosition;
     public Transform lowestValidLocation;
     int mainThrusterOn;
-    bool isControlledByPlayer;
+    // bool isControlledByPlayer;
     bool isOnLastGoal;
 
     [Header("New Control Scheme")]
@@ -34,81 +40,107 @@ public class ChallengeAI : Agent
     {
         this.behaviorType = GetComponent<Unity.MLAgents.Policies.BehaviorParameters>().BehaviorType;
         rocket = GetComponent<Rigidbody>();
+
+        if (MainManager.Instance.difficulty == 0)
+        {
+            speed = 5;
+        }
+        else if (MainManager.Instance.difficulty == 1)
+        {
+            speed = 10;
+        }
+        else if (MainManager.Instance.difficulty == 2)
+        {
+            speed = 15;
+        }
     }
 
     void Update()   
     {
-        if (this.behaviorType == Unity.MLAgents.Policies.BehaviorType.HeuristicOnly)
+        if (done) return;
+        Vector3 directionToGoal = (goalPosition.position - transform.position).normalized;
+
+        // Calculate the rotation needed for up direction to look at the goal
+        Quaternion targetRotation = Quaternion.FromToRotation(transform.up, directionToGoal) * transform.rotation;
+
+        // Gradually rotate the object towards the target rotation if not landing, otherwise face away from the goal
+        if (!landing)
         {
-            // if heuristic react to key presses
-            // Debug.Log("some button is pressed");
-            isControlledByPlayer = true;
-            RequestDecision();
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-
-        if (!playerPrivileges)
+        else
         {
-            if (fuel <= 0)
-            {
-                floor.material = failure;
-                SetReward(-1f);
-                Debug.Log("A Failure");
-                EndEpisode();
-            }
-
-            if (goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY && inertiaTimer <= 0f)
-            {
-                floor.material = failure;
-                Debug.Log("C Failure");
-                SetReward(-1);
-                EndEpisode();
-            }
-            else if (goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY && inertiaTimer <= 0f)
-            {
-                floor.material = failure;
-                SetReward(-1);
-                EndEpisode();
-            }
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation * Quaternion.Euler(0, 180, 0), rotationSpeed * Time.deltaTime);
         }
+        // transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        // transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.FromToRotation(transform.up, goalPosition.position - transform.position), Random.Range(25f, 45f) * Time.deltaTime);
 
-        if (transform.localPosition.y < lowestValidLocation.localPosition.y)
-        {
-            floor.material = failure;
-            Debug.Log("B Failure");
-            SetReward(-1);
-            EndEpisode();
-        }
-        
-        if (inertiaTimer > 0)
-        {
-            inertiaTimer -= Time.deltaTime;
-        }
+        // move towards goal
+        if (game != null && !game.quizPanel.activeSelf) transform.position = Vector3.MoveTowards(transform.position, goalPosition.position, speed * Time.deltaTime);
 
-        
 
-        // if (!isControlledByPlayer && goalPosition.localPosition.y > transform.localPosition.y && rocket.velocity.y < -0.5f)
+        // if (!playerPrivileges)
         // {
+        //     if (fuel <= 0)
+        //     {
+        //         floor.material = failure;
+        //         SetReward(-1f);
+        //         Debug.Log("A Failure");
+        //         EndEpisode();
+        //     }
+
+        //     if (goalPosition.localPosition.y > transform.localPosition.y && transform.localPosition.y < lastY && inertiaTimer <= 0f)
+        //     {
+        //         floor.material = failure;
+        //         Debug.Log("C Failure");
+        //         SetReward(-1);
+        //         EndEpisode();
+        //     }
+        //     else if (goalPosition.localPosition.y < transform.localPosition.y && transform.localPosition.y > lastY && inertiaTimer <= 0f)
+        //     {
+        //         floor.material = failure;
+        //         SetReward(-1);
+        //         EndEpisode();
+        //     }
+        // }
+        // else
+        // {
+        //     if (fuel <= 0)
+        //     {
+        //         // floor.material = failure;
+        //         SetReward(-1f);
+        //         Debug.Log("PLayer A Failure");
+
+        //         game.RequestRestart("You ran out of fuel!");
+        //     }
+        // }
+
+        // if (transform.localPosition.y < lowestValidLocation.localPosition.y)
+        // {
+        //     floor.material = failure;
+        //     Debug.Log("B Failure");
         //     SetReward(-1);
         //     EndEpisode();
         // }
-        // else if (goalPosition.localPosition.y < transform.localPosition.y && rocket.velocity.y > 0.5f && mainThrusterOn == 1)
+        
+        // if (inertiaTimer > 0)
         // {
-        //     SetReward(-1);
-        //     EndEpisode();
+        //     inertiaTimer -= Time.deltaTime;
         // }
 
-        lastY = transform.localPosition.y;
+        // lastY = transform.localPosition.y;
     }
 
     public void ToggleThrust()
     {
         thrusting = !thrusting;
+        particles.SetActive(thrusting);
     }
 
     public override void OnEpisodeBegin()      
     {
         // Debug.Log($"New Episode Started {rocket.velocity}");
-        transform.localPosition = new Vector3(-2f, -4.15f, -2f);
+        transform.localPosition = new Vector3(0f, -4.15f, 0f);
         transform.rotation = Quaternion.identity;
         rocket.velocity = Vector3.zero;
         rocket.angularVelocity = Vector3.zero;
@@ -116,6 +148,7 @@ public class ChallengeAI : Agent
         fuel = 100f;
         inertiaTimer = 0.5f;
         isOnLastGoal = false;
+        landing = false;
     }
 
     public override void CollectObservations(VectorSensor sensor)    
@@ -136,7 +169,7 @@ public class ChallengeAI : Agent
 
         if (mainThrusterOn == 1 && fuel > 0) {
             rocket.AddRelativeForce(Vector3.up * force);
-            fuel -= 1 * Time.deltaTime;
+            if (!game.isQuizActive) fuel -= fuelEfficiencyCoefficient * Time.deltaTime;
             // Debug.Log(fuel);
         }
 
@@ -160,47 +193,36 @@ public class ChallengeAI : Agent
         {
             rotateY -= 1;
         }
-
-        // transform.Rotate(rotateX * rotationSpeed * Time.deltaTime, rotateY * rotationSpeed * Time.deltaTime, 0);
     }
 
     public override void Heuristic(in ActionBuffers action)    
     {
-        ActionSegment<int> discreteActions = action.DiscreteActions;
-        /*
-        if (Input.GetKey(KeyCode.UpArrow) && fuel > 0) {  //while pressed
-            rocket.AddRelativeForce(Vector3.up * force);
-            fuel -= 1 * Time.deltaTime;
-            Debug.Log(fuel);
-        } else if (fuel <= 0) {       //downward force from gravity
-            Debug.Log("Out of fuel!");
-        }
-        */
+        // ActionSegment<int> discreteActions = action.DiscreteActions;
 
-        if (Input.GetKey(KeyCode.UpArrow) || thrusting)     
-        {
-            discreteActions[0] = 1;
-        }
+        // if (Input.GetKey(KeyCode.UpArrow) || thrusting)     
+        // {
+        //     discreteActions[0] = 1;
+        // }
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            discreteActions[1] = 1;
-        }
+        // if (Input.GetKey(KeyCode.W))
+        // {
+        //     discreteActions[1] = 1;
+        // }
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            discreteActions[1] = 2;
-        }
+        // if (Input.GetKey(KeyCode.S))
+        // {
+        //     discreteActions[1] = 2;
+        // }
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            discreteActions[2] = 1;
-        }
+        // if (Input.GetKey(KeyCode.A))
+        // {
+        //     discreteActions[2] = 1;
+        // }
 
-        if (Input.GetKey(KeyCode.D))
-        {
-            discreteActions[2] = 2;
-        }
+        // if (Input.GetKey(KeyCode.D))
+        // {
+        //     discreteActions[2] = 2;
+        // }
 
 
     }
@@ -210,50 +232,52 @@ public class ChallengeAI : Agent
         if (other.TryGetComponent<checkpoint>(out checkpoint goal))
         {
             Debug.Log($"MY INFO: {rocket.velocity.y}");
-            if (isOnLastGoal && rocket.velocity.y >= -4 && rocket.velocity.y <= 0)
+            if (isOnLastGoal && goal.isLast)
             {
                 SetReward(1f);
                 floor.material = success;
                 Debug.Log("Success");
-                EndEpisode();
+                // EndEpisode();
+                done = true;
+                game.IndicateCompletion(false);
             }
-            else if (!other.GetComponent<checkpoint>().isLast && rocket.velocity.y < 4 && rocket.velocity.y >= 0)
+            else if (!other.GetComponent<checkpoint>().isLast)
             {
                 SetReward(1f);
                 isOnLastGoal = true;
                 floor.material = progress;
-                Transform newGoal = other.GetComponent<checkpoint>().next;
-                goalPosition = newGoal;
+                // Transform newGoal = other.GetComponent<checkpoint>().next;
+                // goalPosition = newGoal;
+                goalPosition = lowestValidLocation;
                 Debug.Log("Initial Success");
                 inertiaTimer = 2f;
+
+                // if (!game.isQuizActive && game.progress >= game.questionProgressRequirement)
+                // {
+                //     game.questionProgressRequirement = game.questionProgressRequirement + 0.25f;
+                //     game.lastCheckpoint += 1;
+                //     // all rockets must be stopped
+                //     game.PauseMovement();
+                //     // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
+                //     // question should be asked
+                //     Debug.Log("see");
+                //     game.CreateQuizQuestion();
+                // }
+                if (game != null) game.opponentDirection = 1;
+                landing = true;
             }
-            else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 0))
-            {
-                floor.material = failure;
-                SetReward(-1f);
-                Debug.Log($"Crash Failure {rocket.velocity.y}");
-                EndEpisode();
-            }
+            // else if (!(rocket.velocity.y >= -4 && rocket.velocity.y <= 0))
+            // {
+            //     floor.material = failure;
+            //     SetReward(-1f);
+            //     Debug.Log($"Crash Failure {rocket.velocity.y}");
+            //     EndEpisode();
+            // }
         }
     }
 
-    // void OnColliderEnter(Collider other)
-    // {
-    //     Debug.Log("physical collision");
-    //     if (other.TryGetComponent<checkpoint>(out checkpoint goal))
-    //     {
-    //         if (other.GetComponent<checkpoint>().isLast && rocket.velocity.y >= -4 && rocket.velocity.y < 0)
-    //         {
-    //             SetReward(1f);
-    //             Debug.Log("Success");
-    //             EndEpisode();
-    //         }
-    //         else
-    //         {
-    //             SetReward(-1f);
-    //             Debug.Log("Failure");
-    //             EndEpisode();
-    //         }
-    //     }
-    // }
+    public void RestartAgent()
+    {
+        EndEpisode();
+    }
 }

@@ -1,6 +1,7 @@
  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Extensions;
@@ -50,11 +51,13 @@ namespace Managers
                 if (loggedIn)
                 {
                     Debug.Log("user logged in");
+                    // go to main menu
+                    SceneManager.LoadScene("MainMenu");
                 }
             }
         }
 
-        public IEnumerator SignUp(string email, string password)
+        public IEnumerator SignUp(string email, string password, string name)
         {
             var signupTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(predicate: () => signupTask.IsCompleted);
@@ -62,6 +65,16 @@ namespace Managers
             if (signupTask.Exception == null)
             {
                 Debug.Log(signupTask.Result);
+
+                // set the display name of the firebase user
+                var profile = new Firebase.Auth.UserProfile
+                {
+                    DisplayName = name,
+                };
+
+                var profileTask = user.UpdateUserProfileAsync(profile);
+                yield return new WaitUntil(predicate: () => profileTask.IsCompleted);
+
                 // user = signupTask.user;
                 // if (user != null)
                 // {
@@ -92,6 +105,25 @@ namespace Managers
             // MainManager.Instance
             auth.SignOut();
 
+        }
+
+        public void DeleteUser()
+        {
+            StartCoroutine(DeleteUserAsync());
+        }
+
+        IEnumerator DeleteUserAsync()
+        {
+            var deleteTask = user.DeleteAsync();
+            yield return new WaitUntil(predicate: () => deleteTask.IsCompleted);
+
+            if (deleteTask.Exception == null)
+            {
+                Debug.Log("User deleted successfully");
+
+                // logout
+                auth.SignOut();
+            }
         }
     }
 

@@ -8,6 +8,8 @@ namespace Managers
     {
         public static MainManager Instance;
         public AuthManager authManager;
+        public int difficulty = 0;
+
         void Awake()
         {
             Instance = this;

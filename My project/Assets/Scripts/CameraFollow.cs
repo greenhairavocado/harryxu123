@@ -10,6 +10,8 @@ public class CameraFollow : MonoBehaviour
     public float rotateSpeed = 5f;
     float currentX = 0f;
     float currentY = 0f;
+    public Rect touchableArea = new Rect(0, 0, Screen.width, Screen.height - 400);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,10 +28,24 @@ public class CameraFollow : MonoBehaviour
             currentY = Mathf.Clamp(currentY, -90, 90);
             transform.rotation = Quaternion.Euler(currentY, currentX, 0);
         }
+        else if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            // Check if touch position is within the touchable area
+            if (touchableArea.Contains(touch.position))
+            {
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    currentX += touch.deltaPosition.x * rotateSpeed * Time.deltaTime;
+                    currentY -= touch.deltaPosition.y * rotateSpeed * Time.deltaTime;
+                    currentY = Mathf.Clamp(currentY, -90, 90);
+                    transform.rotation = Quaternion.Euler(currentY, currentX, 0);
+                }
+            }
+        }
 
         transform.position = rocketTransform.position - (transform.rotation * offset);
 
-        // transform.position = rocketTransform.position + rotation * offset;
-        // rocketTransform.LookAt(rocketTransform.position);
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -13,13 +14,16 @@ namespace Handlers
         [Header("Panel References")]
         public GameObject restartPanel;
         public GameObject quizPanel;
+        public GameObject resultPanel;
 
         [Header("UI References")]
         public TextMeshProUGUI timerText;
         public TextMeshProUGUI progressText;
+        public TextMeshProUGUI opponentProgressText;
         public Slider fuelSlider;
         public Slider progressSlider;
-        public GameObject enemySlider;
+        public GameObject enemySliderObject;
+        Slider opponentSlider;
         public GameObject rocketToggle;
         public GameObject joystick;
         
@@ -36,9 +40,11 @@ namespace Handlers
         [Header("Player Information")]
         public float progress;
         public int direction; // 0 is going up, 1 is going down
+        public int opponentDirection;
         public Transform initialGoal;
         public Transform platform;
         float initialDistance;
+        float initialOpponentDistance;
         public float questionProgressRequirement;
 
         private Vector3 storedPlayerVelocity;
@@ -49,16 +55,24 @@ namespace Handlers
         private string correctAnswer;
         [HideInInspector]
         public bool isQuizActive;
+        [HideInInspector]
+        public bool playerIsDone;
+        float playerTime;
+        [HideInInspector]
+        public bool opponentIsDone;
+        float opponentTime;
 
         List<Tuple<string, string, string, string, string, string>> questions;
 
         // Start is called before the first frame update
         void Start()
         {
+            opponentSlider = enemySliderObject.GetComponent<Slider>();
             questionProgressRequirement = 0.25f;
             startTime = Time.time;
             initialDistance = Vector3.Distance(rocket.transform.position, initialGoal.position);
-            Debug.Log($"The initial distance is {initialDistance}");
+            initialOpponentDistance = Vector3.Distance(opponent.transform.position, initialGoal.position);
+            // Debug.Log($"The initial distance is {initialDistance}");
             // consider velocity if applicable
 
             questions = new List<Tuple<string, string, string, string, string, string>>
@@ -93,12 +107,13 @@ namespace Handlers
 
             float t = Time.time - startTime;
 
-            // 00:00:00
-            // 120 vs 2:00
-            string minutes = ((int)t / 60).ToString();
-            string seconds = (t % 60).ToString("f2"); // --> 05
+            // // 00:00:00
+            // // 120 vs 2:00
+            // string minutes = ((int)t / 60).ToString();
+            // string seconds = (t % 60).ToString("f2"); // --> 05
 
-            timerText.text = minutes + ":" + seconds;
+            timerText.text = FormatTime(t);
+            UpdateAIProgress();
 
             if (direction == 0)
             {
@@ -107,10 +122,10 @@ namespace Handlers
                 progress = ((initialDistance - currentDistance) / initialDistance) / 2;
                 progressText.text = $"{(int)(progress * 100)}%";
 
-                if (progress >= 0.5)
-                {
-                    direction = 1;
-                }
+                // if (progress >= 0.5)
+                // {
+                //     direction = 1;
+                // }
             }
             else
             {
@@ -128,14 +143,73 @@ namespace Handlers
                 PauseMovement();
                 // Debug.Log($"Trigger: {progress} {questionProgressRequirement}");
                 // question should be asked
-                Debug.Log("monke");
                 CreateQuizQuestion();
-
-                
             }
 
 
             progressSlider.value = progress;
+            if (playerIsDone)
+            {
+                restartPanel.SetActive(false);
+                progressSlider.value = 1;
+                progressText.text = "100%";
+            }
+
+            if (opponentIsDone)
+            {
+                opponentSlider.value = 1;
+                opponentProgressText.text = "100%";
+            }
+
+
+            if (playerIsDone && opponentIsDone)
+            {
+                if (opponentTime < playerTime)
+                {
+                    resultPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "You Lose!";
+                }
+                else
+                {
+                    resultPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "You Win!";
+                }
+
+                // write both your time and opp time in the result panel with 00:00:00 format
+                resultPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = $"Your Time: {FormatTime(playerTime)}\nOpp Time: {FormatTime(opponentTime)}";
+
+                resultPanel.SetActive(true);
+            }
+        }
+
+        void UpdateAIProgress()
+        {
+            if (opponentDirection == 0)
+            {
+                float currentDistance = Vector3.Distance(opponent.transform.position, initialGoal.position);
+                // 0%-50% range
+                opponentSlider.value = ((initialOpponentDistance - currentDistance) / initialOpponentDistance) / 2;
+                opponentProgressText.text = $"{(int)(opponentSlider.value * 100)}%";
+            }
+            else
+            {
+                float currentDistance = Vector3.Distance(opponent.transform.position, platform.position);
+                // 51%-100%
+                opponentSlider.value = (((initialOpponentDistance - currentDistance) / initialOpponentDistance) / 2f) + 0.5f;
+                opponentProgressText.text = $"{(int)(opponentSlider.value * 100)}%";
+            }
+        }
+
+        string FormatTime(float time)
+        {
+            int intTime = (int)time;
+            int minutes = intTime / 60;
+            int seconds = intTime % 60;
+            float fraction = time;
+            fraction = (fraction % 1) * 100;
+            int milliseconds = (int)fraction;
+
+            string timeText = string.Format("{0:D2}:{1:D2}:{2:D2}", minutes, seconds, milliseconds);
+
+            return timeText;
         }
 
         public void PauseMovement(bool playerOnly=false)
@@ -180,57 +254,14 @@ namespace Handlers
         public void CreateQuizQuestion()
         {
             isQuizActive = true;
-            enemySlider.SetActive(false);
+            enemySliderObject.SetActive(false);
             joystick.SetActive(false);
             rocketToggle.SetActive(false);
 
             quizPanel.SetActive(true);
 
-            /*
-            q1). What is the process by which a star exhausts its nuclear fuel and collapses under gravity?
-            a) Supernova
-            b) Black hole
-            c) Red giant
-            d) White dwarf
-
-            q2). Which of the following is not a type of galaxy?
-            a) Spiral
-            b) Elliptical
-            c) Irregular
-            d) Nebula
-
-            q3). What is the name of the phenomenon where light is bent as it passes through a gravitational field?
-            a) Stellar parallax
-            b) Redshift
-            c) Gravitational lensing
-            d) Cosmic microwave background
-            */
-
-            // pick a random question
-            // var questions = new List<Tuple<string, string, string, string, string, string>>
-            // {
-            //     Tuple.Create("What is the process by which a star exhausts its nuclear fuel and collapses under gravity?", 
-            //                  "Supernova", 
-            //                  "Black Hole", 
-            //                  "Red Giant", 
-            //                  "White Dwarf",
-            //                  "b"),
-            //     Tuple.Create("Which of the following is not a type of galaxy?", 
-            //                  "Spiral", 
-            //                  "Elliptical", 
-            //                  "Irregular", 
-            //                  "Nebula",
-            //                  "d"),
-            //     Tuple.Create("What is the name of the phenomenon where light is bent as it passes through a gravitational field?", 
-            //                  "Stellar parallax", 
-            //                  "Redshift", 
-            //                  "Gravitational Lensing", 
-            //                  "Cosmic Microwave Background",
-            //                  "c"),
-            // };
-
             var randomIndex = UnityEngine.Random.Range(0, questions.Count);
-            Debug.Log($"{randomIndex} {questions.Count}");
+            // Debug.Log($"{randomIndex} {questions.Count}");
             var selectedQuestion = questions[randomIndex];
             questions.RemoveAt(randomIndex);
 
@@ -257,14 +288,14 @@ namespace Handlers
                 rocket.fuel -= 10;
             }
 
-            if (questionProgressRequirement == 0.5f)
+            if (questionProgressRequirement == 0.75f)
             {
                 direction = 1;
             }
 
             isQuizActive = false;
 
-            enemySlider.SetActive(true);
+            enemySliderObject.SetActive(true);
             joystick.SetActive(true);
             rocketToggle.SetActive(true);
 
@@ -274,6 +305,7 @@ namespace Handlers
 
         public void RequestRestart(string reason)
         {
+            // if (playerIsDone) return;
             PauseMovement(true);
             restartPanel.SetActive(true);
 
@@ -292,6 +324,30 @@ namespace Handlers
                 rocket.transform.position = checkpoints[lastCheckpoint];
             }
 
+        }
+
+        public void RestartScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        public void ReturnToMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        public void IndicateCompletion(bool isPlayer)
+        {
+            if (isPlayer)
+            {
+                playerIsDone = true;
+                playerTime = Time.time - startTime;
+            }
+            else
+            {
+                opponentIsDone = true;
+                opponentTime = Time.time - startTime;
+            }
         }
     }
 
