@@ -44,6 +44,7 @@ namespace Managers
                     Debug.Log("user logged out");
 
                     // TODO more logout stuff
+                    SceneManager.LoadScene("Login");
                 }
 
                 user = auth.CurrentUser;
