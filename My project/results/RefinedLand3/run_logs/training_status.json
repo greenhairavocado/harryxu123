@@ -1,0 +1,29 @@
+{
+    "Landing": {
+        "checkpoints": [
+            {
+                "steps": 251668,
+                "file_path": "results\\RefinedLand3\\Landing\\Landing-251668.onnx",
+                "reward": -100.0,
+                "creation_time": 1691453094.8724365,
+                "auxillary_file_paths": [
+                    "results\\RefinedLand3\\Landing\\Landing-251668.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 251668,
+            "file_path": "results\\RefinedLand3\\Landing.onnx",
+            "reward": -100.0,
+            "creation_time": 1691453094.8724365,
+            "auxillary_file_paths": [
+                "results\\RefinedLand3\\Landing\\Landing-251668.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "2.0.1+cpu"
+    }
+}

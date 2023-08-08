@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Goal_tag
   - wall
+  - LandingPad
   layers:
   - Default
   - TransparentFX
