@@ -150,12 +150,12 @@ public class RefinedAI : Agent
         if (other.gameObject.tag == "LandingPad" && preCollisionVelocity.y <= 0 && preCollisionVelocity.y > -threshold)
         {
             rocket.Land();
-            simulationhandler.SubmitReport(true, rocket.RemainingFuel, Time.time - startTime);
+            if (simulationhandler != null) simulationhandler.SubmitReport(true, rocket.RemainingFuel, Time.time - startTime);
         }
         else
         {
             rocket.Crash();
-            simulationhandler.SubmitReport(false, rocket.RemainingFuel, Time.time - startTime);
+            if (simulationhandler != null) simulationhandler.SubmitReport(false, rocket.RemainingFuel, Time.time - startTime);
         }
         
     }

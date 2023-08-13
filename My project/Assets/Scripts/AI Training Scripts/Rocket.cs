@@ -23,11 +23,7 @@ public class Rocket : MonoBehaviour
         if (random)
         {
             // Randomize position and rotation.
-<<<<<<< Updated upstream
-            transform.localPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(60f, 80f), Random.Range(-5f, 5f));
-=======
             transform.localPosition = new Vector3(Random.Range(-5f * scaleFactor, 5f * scaleFactor), Random.Range(50f * scaleFactor, 75f * scaleFactor), Random.Range(-5f * scaleFactor, 5f * scaleFactor));
->>>>>>> Stashed changes
             transform.rotation = Quaternion.Euler(Random.Range(-180f, 180f), Random.Range(-180f, 180f), Random.Range(-180f, 180f));
         }
         else
