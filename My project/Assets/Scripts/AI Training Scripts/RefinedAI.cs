@@ -41,7 +41,9 @@ public class RefinedAI : Agent
         transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRotation, Random.Range(95f, 135f) * Time.deltaTime);
 
         // move the x and z positions towards the landing pad
-        transform.localPosition = Vector3.MoveTowards(transform.localPosition, new Vector3(landingPad.localPosition.x, transform.localPosition.y, landingPad.localPosition.z), 2f * Time.deltaTime);
+        transform.localPosition = Vector3.MoveTowards(transform.localPosition, new Vector3(landingPad.localPosition.x, transform.localPosition.y, landingPad.localPosition.z), rocket.scaleFactor * Time.deltaTime);
+
+        // Debug.Log(rocket.GetComponent<Rigidbody>().velocity);
     }
 
     public override void OnEpisodeBegin()
@@ -52,7 +54,7 @@ public class RefinedAI : Agent
         // Move the landing pad to a new position.
         if (randomPlatform)
         {
-            landingPad.localPosition = new Vector3(Random.Range(-5f, 5f), 0f, Random.Range(-5f, 5f));
+            landingPad.localPosition = new Vector3(Random.Range(-5f * rocket.scaleFactor, 5f * rocket.scaleFactor), 0f, Random.Range(-5f * rocket.scaleFactor, 5f * rocket.scaleFactor));
         }
 
         alignmentGoal = new Vector3(landingPad.localPosition.x, 100f, landingPad.localPosition.z);
@@ -99,7 +101,8 @@ public class RefinedAI : Agent
         // Calculate rewards.
         if (rocket.HasCrashed())
         {
-            SetReward(-100);
+            SetReward(-100 - (Mathf.Abs(preCollisionVelocity.y)));
+            Debug.Log($"Crash at a speed of {preCollisionVelocity.y} m/s");
             floor.material = failure;
             EndEpisode();
         }
@@ -121,9 +124,9 @@ public class RefinedAI : Agent
             floor.material = failure;
             EndEpisode();
         }
-        else if (Vector3.Distance(rocket.transform.localPosition, landingPad.localPosition) > 75f)
+        else if (Vector3.Distance(rocket.transform.localPosition, landingPad.localPosition) > (100f * rocket.scaleFactor))
         {
-            SetReward(-100);
+            SetReward(-1000);
             floor.material = failure;
             EndEpisode();
         }

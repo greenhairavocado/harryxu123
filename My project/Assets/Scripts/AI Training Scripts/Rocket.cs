@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
+    public float scaleFactor = 1.0f;
     public float maxThrust = 15f;
     public float maxRotationSpeed = 1f;
     public float fuel = 100f;
@@ -22,19 +23,28 @@ public class Rocket : MonoBehaviour
         if (random)
         {
             // Randomize position and rotation.
+<<<<<<< Updated upstream
             transform.localPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(60f, 80f), Random.Range(-5f, 5f));
+=======
+            transform.localPosition = new Vector3(Random.Range(-5f * scaleFactor, 5f * scaleFactor), Random.Range(50f * scaleFactor, 75f * scaleFactor), Random.Range(-5f * scaleFactor, 5f * scaleFactor));
+>>>>>>> Stashed changes
             transform.rotation = Quaternion.Euler(Random.Range(-180f, 180f), Random.Range(-180f, 180f), Random.Range(-180f, 180f));
         }
         else
         {
             // Reset position and rotation.
-            transform.localPosition = new Vector3(0f, 25f, 0f);
+            transform.localPosition = new Vector3(0f, 25f * scaleFactor, 0f);
             transform.rotation = Quaternion.identity;
         }
         // Reset position, rotation, and velocities.
-        rb.velocity = Vector3.zero;
+        // rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         fuel = 100f;
+
+        // set the velocity of the rocket going towards the ground
+        rb.velocity = new Vector3(0f, -(Random.Range(2,7)) * scaleFactor, 0f);
+
+        // Debug.Log(rb.velocity);
 
         // Reset status flags.
         isLanded = false;

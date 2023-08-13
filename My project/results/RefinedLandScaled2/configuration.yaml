@@ -35,12 +35,22 @@ behaviors:
           goal_conditioning_type: hyper
           deterministic: false
       gail:
+        gamma: 0.99
         strength: 0.5
+        network_settings:
+          normalize: false
+          hidden_units: 128
+          num_layers: 2
+          vis_encode_type: simple
+          memory: null
+          goal_conditioning_type: hyper
+          deterministic: false
+        learning_rate: 0.0003
+        encoding_size: null
+        use_actions: false
+        use_vail: false
         demo_path: Demos/LandingImitation_0.demo
-    behavioral_cloning:
-      strength: 0.5
-      demo_path: Demos/LandingImitation_0.demo
-    init_path: null
+    init_path: results\RefinedLandScaled1\Landing\checkpoint.pt
     keep_checkpoints: 5
     checkpoint_interval: 500000
     max_steps: 500000
@@ -63,14 +73,14 @@ engine_settings:
   width: 84
   height: 84
   quality_level: 5
-  time_scale: 20
+  time_scale: 20.0
   target_frame_rate: -1
   capture_frame_rate: 60
   no_graphics: false
 environment_parameters: null
 checkpoint_settings:
-  run_id: RefinedLand
-  initialize_from: null
+  run_id: RefinedLandScaled2
+  initialize_from: RefinedLandScaled1
   load_model: false
   resume: false
   force: true
