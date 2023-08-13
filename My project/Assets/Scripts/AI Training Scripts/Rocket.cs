@@ -22,7 +22,7 @@ public class Rocket : MonoBehaviour
         if (random)
         {
             // Randomize position and rotation.
-            transform.localPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(25f, 50f), Random.Range(-5f, 5f));
+            transform.localPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(60f, 80f), Random.Range(-5f, 5f));
             transform.rotation = Quaternion.Euler(Random.Range(-180f, 180f), Random.Range(-180f, 180f), Random.Range(-180f, 180f));
         }
         else

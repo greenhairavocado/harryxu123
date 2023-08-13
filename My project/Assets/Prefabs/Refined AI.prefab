@@ -206,9 +206,10 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  simulationhandler: {fileID: 0}
   rocket: {fileID: 8067797231619743146}
   landingPad: {fileID: 0}
-  threshold: 4
+  threshold: 1
   randomPlatform: 1
   randomSpawn: 1
   enableSteering: 0

@@ -1,3 +1,4 @@
+// using System;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -5,6 +6,7 @@ using Unity.MLAgents.Sensors;
 
 public class RefinedAI : Agent
 {
+    public simulationhandler simulationhandler;
     [Header("Specific to Rocket")]
     public Rocket rocket; // Assume a Rocket class is managing the physics and status of the rocket.
     public Transform landingPad;
@@ -23,9 +25,12 @@ public class RefinedAI : Agent
     float lastDistance;
     float alignment;
 
+    float startTime;
+
     void Start()
     {
         alignmentGoal = new Vector3(landingPad.localPosition.x, 100f, landingPad.localPosition.z);
+        startTime = Time.time;
     }
 
     void FixedUpdate()
@@ -142,10 +147,13 @@ public class RefinedAI : Agent
         if (other.gameObject.tag == "LandingPad" && preCollisionVelocity.y <= 0 && preCollisionVelocity.y > -threshold)
         {
             rocket.Land();
+            simulationhandler.SubmitReport(true, rocket.RemainingFuel, Time.time - startTime);
         }
         else
         {
             rocket.Crash();
+            simulationhandler.SubmitReport(false, rocket.RemainingFuel, Time.time - startTime);
         }
+        
     }
 }
