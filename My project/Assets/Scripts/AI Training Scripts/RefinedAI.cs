@@ -23,6 +23,7 @@ public class RefinedAI : Agent
     Vector3 preCollisionVelocity;
     Vector3 alignmentGoal;
     float lastDistance;
+    float lastVelocity;
     float alignment;
 
     float startTime;
@@ -44,6 +45,16 @@ public class RefinedAI : Agent
         transform.localPosition = Vector3.MoveTowards(transform.localPosition, new Vector3(landingPad.localPosition.x, transform.localPosition.y, landingPad.localPosition.z), rocket.scaleFactor * Time.deltaTime);
 
         // Debug.Log(rocket.GetComponent<Rigidbody>().velocity);
+
+        // if the rocket is falling faster than the last velocity, punish it
+        // if (rocket.Velocity.y < lastVelocity && rocket.transform.localPosition.y < landingPad.localPosition.y + 400f)
+        // {
+        //     AddReward(-0.1f);
+        // }
+        // else
+        // {
+        //     AddReward(0.1f);
+        // }
     }
 
     public override void OnEpisodeBegin()
@@ -60,6 +71,7 @@ public class RefinedAI : Agent
         alignmentGoal = new Vector3(landingPad.localPosition.x, 100f, landingPad.localPosition.z);
 
         lastDistance = Vector3.Distance(rocket.transform.localPosition, landingPad.localPosition);
+        lastVelocity = rocket.Velocity.y;
         alignment = Vector3.Dot(rocket.transform.up, Vector3.up);
         
     }
@@ -101,14 +113,15 @@ public class RefinedAI : Agent
         // Calculate rewards.
         if (rocket.HasCrashed())
         {
-            SetReward(-100 - (Mathf.Abs(preCollisionVelocity.y)));
-            Debug.Log($"Crash at a speed of {preCollisionVelocity.y} m/s");
+            SetReward(-100 - (Mathf.Abs(preCollisionVelocity.y) * 10));
+            // Debug.Log($"Crashed at a speed of {preCollisionVelocity.y} m/s");
             floor.material = failure;
             EndEpisode();
         }
         else if (rocket.HasLanded())
         {
-            SetReward(100 + rocket.RemainingFuel);
+            SetReward(1000 + (rocket.RemainingFuel * 10));
+            // Debug.Log($"Landed with {rocket.RemainingFuel} fuel remaining at a speed of {preCollisionVelocity.y} m/s");
             floor.material = success;
             EndEpisode();
         }
@@ -124,6 +137,25 @@ public class RefinedAI : Agent
             floor.material = failure;
             EndEpisode();
         }
+        // else if (lastVelocity + 10f < rocket.Velocity.y)
+        // {
+        //     Debug.Log($"Velocity increased from {lastVelocity} to {rocket.Velocity.y} m/s");
+        //     SetReward(-100);
+        //     floor.material = failure;
+        //     EndEpisode();
+        // }
+        // else if (Vector3.Distance(rocket.transform.localPosition, landingPad.localPosition) > lastDistance)
+        // {
+        //     SetReward(-100);
+        //     floor.material = failure;
+        //     EndEpisode();
+        // }
+        else if (rocket.Velocity.y > 50f)
+        {
+            SetReward(-1000);
+            floor.material = failure;
+            EndEpisode();
+        }
         else if (Vector3.Distance(rocket.transform.localPosition, landingPad.localPosition) > (100f * rocket.scaleFactor))
         {
             SetReward(-1000);
@@ -131,6 +163,7 @@ public class RefinedAI : Agent
             EndEpisode();
         }
         lastDistance = Vector3.Distance(rocket.transform.localPosition, landingPad.localPosition);
+        lastVelocity = rocket.Velocity.y;
         alignment = alignmentDotProduct;
     }
 

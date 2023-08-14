@@ -1,0 +1,38 @@
+{
+    "Landing": {
+        "checkpoints": [
+            {
+                "steps": 499974,
+                "file_path": "results\\RefinedLandScaled3\\Landing\\Landing-499974.onnx",
+                "reward": -635.199732612161,
+                "creation_time": 1692048797.0085742,
+                "auxillary_file_paths": [
+                    "results\\RefinedLandScaled3\\Landing\\Landing-499974.pt"
+                ]
+            },
+            {
+                "steps": 500038,
+                "file_path": "results\\RefinedLandScaled3\\Landing\\Landing-500038.onnx",
+                "reward": -635.199732612161,
+                "creation_time": 1692048797.0495746,
+                "auxillary_file_paths": [
+                    "results\\RefinedLandScaled3\\Landing\\Landing-500038.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500038,
+            "file_path": "results\\RefinedLandScaled3\\Landing.onnx",
+            "reward": -635.199732612161,
+            "creation_time": 1692048797.0495746,
+            "auxillary_file_paths": [
+                "results\\RefinedLandScaled3\\Landing\\Landing-500038.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "2.0.1+cpu"
+    }
+}
