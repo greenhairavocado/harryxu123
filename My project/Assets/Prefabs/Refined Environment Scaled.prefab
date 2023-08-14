@@ -5488,7 +5488,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 0daf6c7d7b0994d108ee64fbbdc3825f, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: Landing
@@ -5515,7 +5515,7 @@ MonoBehaviour:
   simulationhandler: {fileID: 0}
   rocket: {fileID: 8281507527896729269}
   landingPad: {fileID: 2097342542013563422}
-  threshold: 3
+  threshold: 4
   randomPlatform: 1
   randomSpawn: 1
   enableSteering: 0
