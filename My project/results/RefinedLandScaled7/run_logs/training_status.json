@@ -4,8 +4,8 @@
             {
                 "steps": 499937,
                 "file_path": "results\\RefinedLandScaled7\\Landing\\Landing-499937.onnx",
-                "reward": -2351.3466118706597,
-                "creation_time": 1692050483.9698188,
+                "reward": 1516.299538930257,
+                "creation_time": 1692137528.7434077,
                 "auxillary_file_paths": [
                     "results\\RefinedLandScaled7\\Landing\\Landing-499937.pt"
                 ]
@@ -13,8 +13,8 @@
             {
                 "steps": 500001,
                 "file_path": "results\\RefinedLandScaled7\\Landing\\Landing-500001.onnx",
-                "reward": -2351.3466118706597,
-                "creation_time": 1692050484.015819,
+                "reward": 1516.299538930257,
+                "creation_time": 1692137528.7734094,
                 "auxillary_file_paths": [
                     "results\\RefinedLandScaled7\\Landing\\Landing-500001.pt"
                 ]
@@ -23,8 +23,8 @@
         "final_checkpoint": {
             "steps": 500001,
             "file_path": "results\\RefinedLandScaled7\\Landing.onnx",
-            "reward": -2351.3466118706597,
-            "creation_time": 1692050484.015819,
+            "reward": 1516.299538930257,
+            "creation_time": 1692137528.7734094,
             "auxillary_file_paths": [
                 "results\\RefinedLandScaled7\\Landing\\Landing-500001.pt"
             ]

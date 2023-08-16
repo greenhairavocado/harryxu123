@@ -5,6 +5,7 @@ using TMPro;
 
 public class simulationhandler : MonoBehaviour
 {
+    public bool recordData = false;
     public int totalAllowedAttempts = 1000;
     public float successRate;
     public float averageFuel;
@@ -28,23 +29,27 @@ public class simulationhandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (successes + failures > 0)
+        if (recordData)
         {
-            successRate = ((successes * 1.0f) / (successes + failures)) * 100;
+            if (successes + failures > 0)
+            {
+                successRate = ((successes * 1.0f) / (successes + failures)) * 100;
+                
+            } 
+            else
+            {
+                successRate = 0;
+            }
             
-        } 
-        else
-        {
-            successRate = 0;
+            successText.text = $"Success Rate: {successRate}%";
+
+            fuelText.text = $"Average Fuel Remaining: {averageFuel}";
+
+            timeText.text = $"Average Time to Land: {FormatTime(averageTime)}";
+
+            description.text = $"Total attempts: {successes + failures}\n";
         }
         
-        successText.text = $"Success Rate: {successRate}%";
-
-        fuelText.text = $"Average Fuel Remaining: {averageFuel}";
-
-        timeText.text = $"Average Time to Land: {FormatTime(averageTime)}";
-
-        description.text = $"Total attempts: {successes + failures}\n";
     }
 
     public void SubmitReport(bool success, float fuel, float time)

@@ -123,6 +123,23 @@ public class RefinedAI : Agent
             SetReward(1000 + (rocket.RemainingFuel * 10));
             // Debug.Log($"Landed with {rocket.RemainingFuel} fuel remaining at a speed of {preCollisionVelocity.y} m/s");
             floor.material = success;
+
+            if (rocket.Velocity.y > -1f && rocket.Velocity.y < 1f)
+            {
+                Debug.Log($"Less than 1! {rocket.Velocity.y} m/s");
+                SetReward(500);
+            }
+            else if (rocket.Velocity.y > -2f && rocket.Velocity.y < 1f)
+            {
+                Debug.Log($"Less than 2! {rocket.Velocity.y} m/s");
+                SetReward(250);
+            }
+            else if (rocket.Velocity.y > -3f && rocket.Velocity.y < 1f)
+            {
+                Debug.Log($"Less than 3! {rocket.Velocity.y} m/s");
+                SetReward(100);
+            }
+
             EndEpisode();
         }
         else if (rocket.RemainingFuel <= 0f)
