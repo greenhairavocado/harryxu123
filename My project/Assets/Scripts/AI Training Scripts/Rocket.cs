@@ -6,6 +6,8 @@ public class Rocket : MonoBehaviour
     public float maxThrust = 15f;
     public float maxRotationSpeed = 1f;
     public float fuel = 100f;
+    public float startingHeight = 3000f;
+    public float startingVerticalVelocity;
 
     private Rigidbody rb;
 
@@ -25,20 +27,23 @@ public class Rocket : MonoBehaviour
             // Randomize position and rotation.
             transform.localPosition = new Vector3(Random.Range(-5f * scaleFactor, 5f * scaleFactor), Random.Range(50f * scaleFactor, 75f * scaleFactor), Random.Range(-5f * scaleFactor, 5f * scaleFactor));
             transform.rotation = Quaternion.Euler(Random.Range(-180f, 180f), Random.Range(-180f, 180f), Random.Range(-180f, 180f));
+            // set the velocity of the rocket going towards the ground
+            rb.velocity = new Vector3(0f, -(Random.Range(2,7)) * scaleFactor, 0f);
         }
         else
         {
             // Reset position and rotation.
-            transform.localPosition = new Vector3(0f, 25f * scaleFactor, 0f);
+            transform.localPosition = new Vector3(0f, startingHeight, 0f);
             transform.rotation = Quaternion.identity;
+            // set the velocity of the rocket going towards the ground
+            rb.velocity = new Vector3(0f, startingVerticalVelocity, 0f);
         }
         // Reset position, rotation, and velocities.
         // rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         fuel = 100f;
 
-        // set the velocity of the rocket going towards the ground
-        rb.velocity = new Vector3(0f, -(Random.Range(2,7)) * scaleFactor, 0f);
+        
 
         // Debug.Log(rb.velocity);
 

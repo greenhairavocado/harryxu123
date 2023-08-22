@@ -10,6 +10,7 @@ public class RefinedAI : Agent
     [Header("Specific to Rocket")]
     public Rocket rocket; // Assume a Rocket class is managing the physics and status of the rocket.
     public Transform landingPad;
+    public float landingPadOffset = 0f;
     public float threshold = 0.1f;
 
     [Header("Specific to Training")]
@@ -62,6 +63,7 @@ public class RefinedAI : Agent
         // Reset rocket to some initial condition at the start of each episode.
         rocket.Reset(randomSpawn);
 
+        landingPad.localPosition = new Vector3(landingPadOffset, 0f, 0f);
         // Move the landing pad to a new position.
         if (randomPlatform)
         {
@@ -126,17 +128,17 @@ public class RefinedAI : Agent
 
             if (rocket.Velocity.y > -1f && rocket.Velocity.y < 1f)
             {
-                Debug.Log($"Less than 1! {rocket.Velocity.y} m/s");
+                // Debug.Log($"Less than 1! {rocket.Velocity.y} m/s");
                 SetReward(500);
             }
             else if (rocket.Velocity.y > -2f && rocket.Velocity.y < 1f)
             {
-                Debug.Log($"Less than 2! {rocket.Velocity.y} m/s");
+                // Debug.Log($"Less than 2! {rocket.Velocity.y} m/s");
                 SetReward(250);
             }
             else if (rocket.Velocity.y > -3f && rocket.Velocity.y < 1f)
             {
-                Debug.Log($"Less than 3! {rocket.Velocity.y} m/s");
+                // Debug.Log($"Less than 3! {rocket.Velocity.y} m/s");
                 SetReward(100);
             }
 

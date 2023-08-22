@@ -13,10 +13,18 @@ public class simulationhandler : MonoBehaviour
 
     int successes;
     int failures;
+    float bestFuel;
+    float worstFuel = 1000;
+    float bestTime = 1000;
+    float worstTime;
 
     public TextMeshProUGUI successText;
+    public TextMeshProUGUI bestFuelText;
     public TextMeshProUGUI fuelText;
+    public TextMeshProUGUI worstFuelText;
+    public TextMeshProUGUI bestTimeText;
     public TextMeshProUGUI timeText;
+    public TextMeshProUGUI worstTimeText;
     public TextMeshProUGUI description;
 
 
@@ -44,8 +52,12 @@ public class simulationhandler : MonoBehaviour
             successText.text = $"Success Rate: {successRate}%";
 
             fuelText.text = $"Average Fuel Remaining: {averageFuel}";
+            bestFuelText.text = $"Best Fuel Remaining: {bestFuel}";
+            worstFuelText.text = $"Worst Fuel Remaining: {worstFuel}";
 
             timeText.text = $"Average Time to Land: {FormatTime(averageTime)}";
+            bestTimeText.text = $"Best Time to Land: {FormatTime(bestTime)}";
+            worstTimeText.text = $"Worst Time to Land: {FormatTime(worstTime)}";
 
             description.text = $"Total attempts: {successes + failures}\n";
         }
@@ -58,6 +70,26 @@ public class simulationhandler : MonoBehaviour
         if (success)
         {
             successes += 1;
+
+            if (fuel > bestFuel || bestFuel == 0)
+            {
+                bestFuel = fuel;
+            }
+
+            if (fuel < worstFuel)
+            {
+                worstFuel = fuel;
+            }
+
+            if (time < bestTime)
+            {
+                bestTime = time;
+            }
+
+            if (time > worstTime)
+            {
+                worstTime = time;
+            }
         }
         else
         {
